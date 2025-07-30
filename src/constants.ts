@@ -1,7 +1,7 @@
 /**
  * Tracklytic Base Endpoint
  */
-const TRACKLYTIC_BASE = 'https://api.tracklytic.de';
+const TRACKLYTIC_BASE = 'http://localhost:4030';
 
 export const ENDPOINTS = {
   /**

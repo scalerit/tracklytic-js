@@ -3,8 +3,8 @@ const { Tracklytic } = require('./dist/index.js');
 // Initialize Tracklytic client
 // Replace these with your actual credentials
 const tracklytic = new Tracklytic({
-  token: 'your-api-token-here',
-  project: 'your-project-id',
+  token: 'YOUR_API_TOKEN',
+  project: '6888c0c56fdb1864a135cb77',
   disableTracking: false // Set to true to disable API calls during testing
 });
 
@@ -16,6 +16,7 @@ async function runTests() {
     console.log('📊 Test 1: Tracking a simple event...');
     await tracklytic.track({
       event: 'test_event',
+      channel: '6888fd3950cc18e2df100a58',
       description: 'This is a test event from the SDK',
       icon: '🧪',
       user_id: 'test_user_123',
@@ -29,7 +30,9 @@ async function runTests() {
     // Test 2: Track a page view event
     console.log('📄 Test 2: Tracking a page view...');
     await tracklytic.track({
+      notify: true,
       event: 'page_view',
+      channel: '6888fd3950cc18e2df100a58',
       description: 'User viewed the test page',
       icon: '👁️',
       user_id: 'test_user_123',
@@ -59,7 +62,7 @@ async function runTests() {
     await tracklytic.insight.track({
       title: 'Test Users Count',
       value: 1,
-      icon: '👥'
+      icon: '👥',
     });
     console.log('✅ Insight tracked successfully!\n');
 
@@ -68,7 +71,7 @@ async function runTests() {
     await tracklytic.insight.increment({
       title: 'Test Counter',
       value: 1,
-      icon: '🔢'
+      icon: '🔢',
     });
     console.log('✅ Insight incremented successfully!\n');
 
@@ -76,6 +79,7 @@ async function runTests() {
     console.log('🔔 Test 6: Tracking an event with notification...');
     await tracklytic.track({
       event: 'important_action',
+      channel: '6888fd3950cc18e2df100a58',
       description: 'This is an important test action',
       icon: '🚨',
       user_id: 'test_user_123',
