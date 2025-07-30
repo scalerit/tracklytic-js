@@ -8,6 +8,9 @@ const tracklytic = new Tracklytic({
   disableTracking: false // Set to true to disable API calls during testing
 });
 
+// Channel ID for testing - replace with your actual channel ID
+const CHANNEL_ID = 'your-channel-id-here';
+
 async function runTests() {
   console.log('🚀 Starting Tracklytic SDK Tests...\n');
 
@@ -16,7 +19,7 @@ async function runTests() {
     console.log('📊 Test 1: Tracking a simple event...');
     await tracklytic.track({
       event: 'test_event',
-      channel: '6888fd3950cc18e2df100a58',
+      channel: CHANNEL_ID,
       description: 'This is a test event from the SDK',
       icon: '🧪',
       user_id: 'test_user_123',
@@ -32,7 +35,7 @@ async function runTests() {
     await tracklytic.track({
       notify: true,
       event: 'page_view',
-      channel: '6888fd3950cc18e2df100a58',
+      channel: CHANNEL_ID,
       description: 'User viewed the test page',
       icon: '👁️',
       user_id: 'test_user_123',
@@ -79,7 +82,7 @@ async function runTests() {
     console.log('🔔 Test 6: Tracking an event with notification...');
     await tracklytic.track({
       event: 'important_action',
-      channel: '6888fd3950cc18e2df100a58',
+      channel: CHANNEL_ID,
       description: 'This is an important test action',
       icon: '🚨',
       user_id: 'test_user_123',
@@ -113,6 +116,7 @@ async function testDevelopmentMode() {
   try {
     await devTracklytic.track({
       event: 'dev_test',
+      channel: 'dev-channel',
       description: 'This should not be sent to API',
       user_id: 'dev_user'
     });
@@ -133,6 +137,7 @@ async function main() {
     console.log('\n⚠️  WARNING: Please update the credentials in test.js before running!');
     console.log('   - Replace "your-api-token-here" with your actual API token');
     console.log('   - Replace "your-project-id" with your actual project ID');
+    console.log('   - Replace "your-channel-id-here" with your actual channel ID');
     console.log('\n🧪 Running in development mode instead...\n');
     
     await testDevelopmentMode();

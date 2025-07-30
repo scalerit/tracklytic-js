@@ -1,11 +1,9 @@
 <div align="center">
-	<img src="https://tracklytic.com/og-image.png" alt="Tracklytic"/>
 	<br>
     <h1>Tracklytic</h1>
 	<p>Real-time event tracking and analytics for modern applications.</p>
 	<a href="https://www.npmjs.com/package/tracklytic"><img src="https://img.shields.io/npm/v/tracklytic" alt="NPM Version"></a>
-	<a href="https://discord.gg/tracklytic"><img src="https://img.shields.io/discord/922560704454750245?color=%237289DA&label=Discord" alt="Discord"></a>
-	<a href="https://docs.tracklytic.com"><img src="https://img.shields.io/badge/Docs-Tracklytic-blue" alt="Documentation"></a>
+	<a href="https://docs.tracklytic.de"><img src="https://img.shields.io/badge/Docs-Tracklytic-blue" alt="Documentation"></a>
 	<br>
 	<br>
 </div>
@@ -44,6 +42,7 @@ const tracklytic = new Tracklytic({
 // Track a page view
 await tracklytic.track({
   event: "page_view",
+  channel: "507f1f77bcf86cd799439013",
   description: "User viewed homepage",
   icon: "👁️",
   user_id: "user_123",
@@ -56,6 +55,7 @@ await tracklytic.track({
 // Track a custom event
 await tracklytic.track({
   event: "user_signup",
+  channel: "507f1f77bcf86cd799439013",
   description: "New user registered",
   icon: "🎉",
   user_id: "user_456",
@@ -116,7 +116,7 @@ new Tracklytic({
 ```js
 tracklytic.track({
   event: string,           // Required: Event name
-  channel?: string,        // Optional: Channel ID
+  channel: string,         // Required: Channel ID
   description?: string,    // Optional: Event description
   user_id?: string,        // Optional: User identifier
   icon?: string,           // Optional: Emoji icon
@@ -198,6 +198,7 @@ try {
 // Track product views
 await tracklytic.track({
   event: "product_view",
+  channel: "507f1f77bcf86cd799439013",
   description: "User viewed product",
   user_id: user.id,
   tags: {
@@ -210,6 +211,7 @@ await tracklytic.track({
 // Track purchases
 await tracklytic.track({
   event: "purchase_completed",
+  channel: "507f1f77bcf86cd799439013",
   description: "Order completed successfully",
   user_id: user.id,
   icon: "💰",
@@ -228,6 +230,7 @@ await tracklytic.track({
 // Track feature usage
 await tracklytic.track({
   event: "feature_used",
+  channel: "507f1f77bcf86cd799439013",
   description: "User used advanced analytics",
   user_id: user.id,
   tags: {
@@ -259,14 +262,12 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🆘 Support
 
-- 📖 [Documentation](https://docs.tracklytic.com)
-- 💬 [Discord Community](https://discord.gg/tracklytic)
-- 🐛 [Report Issues](https://github.com/Tracklytic/tracklytic.js/issues)
-- 📧 [Email Support](mailto:support@tracklytic.com)
+- 📖 [Documentation](https://docs.tracklytic.de)
+- 📧 [Email Support](mailto:support@scalerit.com)
 
 ---
 
 <div align="center">
   <p>Built with ❤️ by the Tracklytic Team</p>
-  <p><a href="https://tracklytic.com">tracklytic.com</a></p>
+  <p><a href="https://tracklytic.de">tracklytic.de</a></p>
 </div>

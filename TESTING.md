@@ -7,6 +7,7 @@ This guide will help you test the Tracklytic SDK to ensure it's working correctl
 1. **Tracklytic Account**: You need a Tracklytic account with a project set up
 2. **API Token**: Get your API token from your Tracklytic dashboard
 3. **Project ID**: Get your project ID from your Tracklytic dashboard
+4. **Channel ID**: Get your channel ID from your Tracklytic dashboard
 
 ## 🚀 Quick Start
 
@@ -26,6 +27,7 @@ npm run build
 # Open test.js and replace:
 # - 'your-api-token-here' with your actual API token
 # - 'your-project-id' with your actual project ID
+# - 'your-channel-id-here' with your actual channel ID
 
 # Run the test
 node test.js
@@ -40,6 +42,7 @@ npm run build:vite
 # Open the browser test file
 open test-browser.html
 # or simply open test-browser.html in your browser
+# Make sure to enter your API token, project ID, and channel ID in the form
 ```
 
 ## 📊 Test Coverage

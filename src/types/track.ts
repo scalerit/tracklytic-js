@@ -3,10 +3,10 @@
  */
 export interface TrackOptions {
   /**
-   * Channel ID (optional in Tracklytic)
+   * Channel ID (required in Tracklytic)
    * example: "507f1f77bcf86cd799439013"
    */
-  channel?: string;
+  channel: string;
 
   /**
    * Event name
