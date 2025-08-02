@@ -1,6 +1,6 @@
 {
   "name": "tracklytic",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tracklytic Client - Real-time event tracking and analytics",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

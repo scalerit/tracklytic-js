@@ -124,7 +124,7 @@ If there are any issues, you'll see detailed error messages:
 
 ```
 ❌ Test failed: HTTP Error Response: 401 Unauthorized
-[Tracklytic] Failed to publish: : Please check our docs at https://docs.tracklytic.com
+[Tracklytic] Failed to publish: : Please check our docs at https://docs.tracklytic.de
 ```
 
 ## 🔍 Troubleshooting
@@ -180,7 +180,7 @@ After successful testing:
 If you encounter any issues:
 
 1. Check the [main README.md](README.md) for detailed documentation
-2. Review the [Tracklytic API documentation](https://docs.tracklytic.com)
+2. Review the [Tracklytic API documentation](https://docs.tracklytic.de)
 3. Check the browser console or Node.js logs for detailed error messages
 4. Ensure your Tracklytic instance is running and accessible
 

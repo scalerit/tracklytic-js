@@ -3,9 +3,13 @@
  */
 export class HTTPResponseError extends Error {
   public readonly message: string;
+  public readonly status: number;
+  public readonly statusText: string;
 
   constructor(status: number, statusText: string, body: any | undefined) {
     super(`HTTP Error Response: ${status} ${statusText}`);
+    this.status = status;
+    this.statusText = statusText;
     this.message = this.createReadableString(body);
   }
 
@@ -15,13 +19,32 @@ export class HTTPResponseError extends Error {
    */
   createReadableString(body: any) {
     let error = '[Tracklytic] Failed to publish: ';
-    if (body && body.validation && Array.isArray(body.validation.body)) {
-      error += body.validation.body
-        .map((item: { message: string }) => item.message)
-        .join(', ');
+    
+    // Handle API error responses according to the API specification
+    if (body && typeof body === 'object') {
+      // Check for standard API error format (code + message)
+      if (body.code && body.message) {
+        error += body.message;
+      }
+      // Check for validation errors (legacy format)
+      else if (body.validation && Array.isArray(body.validation.body)) {
+        error += body.validation.body
+          .map((item: { message: string }) => item.message)
+          .join(', ');
+      }
+      // Check for direct message property
+      else if (body.message) {
+        error += body.message;
+      }
+      // Fallback for other error formats
+      else {
+        error += `HTTP ${this.status}: ${this.statusText}`;
+      }
     } else {
-      error += `: Please check our docs at https://docs.tracklytic.com`;
+      // Fallback when no body is provided
+      error += `HTTP ${this.status}: ${this.statusText}`;
     }
+    
     return error;
   }
 
@@ -34,7 +57,9 @@ export class HTTPResponseError extends Error {
    */
   toJSON() {
     return {
-      message: this.message
+      message: this.message,
+      status: this.status,
+      statusText: this.statusText
     };
   }
 }

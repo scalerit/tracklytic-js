@@ -18,7 +18,7 @@ export default class Tracklytic {
    * @param token Tracklytic API token
    * @param project Tracklytic project name
    * @param disableTracking Disable tracking
-   * for more information, see: docs.tracklytic.com
+   * for more information, see: docs.tracklytic.de
    */
   constructor({
     token,
