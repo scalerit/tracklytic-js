@@ -122,7 +122,7 @@ tracklytic.track({
   icon?: string,           // Optional: Emoji icon
   tags?: object,           // Optional: Custom tags
   notify?: boolean,        // Optional: Send notifications
-  parser?: 'markdown',     // Optional: Description parser
+  actions?: ActionComponent[], // Optional: Interactive actions
   timestamp?: number|Date  // Optional: Event timestamp
 })
 ```

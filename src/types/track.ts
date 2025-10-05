@@ -1,3 +1,5 @@
+import { ActionComponent } from './action';
+
 /**
  * Options for publishing Tracklytic events
  */
@@ -45,9 +47,9 @@ export interface TrackOptions {
   notify?: boolean;
 
   /**
-   * Parser for description
+   * Interactive actions available for this event
    */
-  parser?: Parser;
+  actions?: ActionComponent[];
 
   /**
    * Event timestamp
@@ -59,4 +61,4 @@ export type TagKey = Lowercase<string>;
 
 /** Tag Type **/
 export type Tags = { [key: TagKey]: string | number | boolean };
-export type Parser = 'markdown' | 'text';
+
