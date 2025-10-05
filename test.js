@@ -3,8 +3,8 @@ const { Tracklytic } = require('./dist/index.js');
 // Initialize Tracklytic client
 // Replace these with your actual credentials
 const tracklytic = new Tracklytic({
-  token: 'YOUR_API_TOKEN',
-  project: '68e284a71fa2cba4a67a6586',
+  token: 'token',
+  project: 'project',
   disableTracking: false // Set to true to disable API calls during testing
 });
 
