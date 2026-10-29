@@ -8,13 +8,13 @@ interface GroupWithUserOptions {
    * Group ID
    * example: "group_123"
    */
-  group_id: string;
+  groupId: string;
 
   /**
    * User ID
    * example: "user_123"
    */
-  user_id: string;
+  userId: string;
 }
 
 interface GroupWithPropertiesOptions {
@@ -22,13 +22,13 @@ interface GroupWithPropertiesOptions {
    * Group ID
    * example: "group_123"
    */
-  group_id: string;
+  groupId: string;
 
   /**
    * User ID
    * example: "user_123"
    */
-  user_id: string | undefined;
+  userId: string | undefined;
 
   /**
    * Group properties

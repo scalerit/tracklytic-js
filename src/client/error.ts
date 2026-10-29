@@ -6,7 +6,7 @@ export class HTTPResponseError extends Error {
   public readonly status: number;
   public readonly statusText: string;
 
-  constructor(status: number, statusText: string, body: any | undefined) {
+  constructor(status: number, statusText: string, body: unknown) {
     super(`HTTP Error Response: ${status} ${statusText}`);
     this.status = status;
     this.statusText = statusText;
@@ -17,24 +17,25 @@ export class HTTPResponseError extends Error {
    * Create a readable string from the response body
    * @param body
    */
-  createReadableString(body: any) {
+  createReadableString(body: unknown) {
     let error = '[Tracklytic] Failed to publish: ';
     
     // Handle API error responses according to the API specification
     if (body && typeof body === 'object') {
+      const details = body as { code?: unknown; message?: unknown; validation?: { body?: { message: string }[] } };
       // Check for standard API error format (code + message)
-      if (body.code && body.message) {
-        error += body.message;
+      if (details.code && details.message) {
+        error += String(details.message);
       }
       // Check for validation errors (legacy format)
-      else if (body.validation && Array.isArray(body.validation.body)) {
-        error += body.validation.body
+      else if (details.validation && Array.isArray(details.validation.body)) {
+        error += details.validation.body
           .map((item: { message: string }) => item.message)
           .join(', ');
       }
       // Check for direct message property
-      else if (body.message) {
-        error += body.message;
+      else if (details.message) {
+        error += String(details.message);
       }
       // Fallback for other error formats
       else {

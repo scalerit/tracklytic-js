@@ -1,0 +1,110 @@
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const { Tracklytic, HTTPResponseError } = require('../dist');
+function setup(reply = {}, status = 200) {
+  const calls = [];
+  const client = new Tracklytic({ token: 'api-token', accessToken: 'user-jwt', project: 'my-project', baseUrl: 'https://example.test/', request: async (url, init) => {
+    calls.push({ url, ...init, json: init.body ? JSON.parse(init.body) : undefined });
+    return new Response(status === 204 ? null : JSON.stringify(reply), { status });
+  } });
+  return { client, calls };
+}
+test('event payload uses milliseconds, badge, log level, nested tags and never mutates options', async () => {
+  const { client, calls } = setup({}, 201);
+  const options = Object.freeze({ channel: 'deployments', event: 'Deployed', timestamp: new Date('2026-10-30T00:00:00Z'), badge: { title: 'Production', color: 'success' }, logLevel: 'info', tags: { camelCase: { nested: [true, null, 4] } }, icon: 'legacy' });
+  assert.equal(await client.track(options), true);
+  assert.equal(calls[0].url, 'https://example.test/v1/event');
+  assert.equal(calls[0].json.timestamp, options.timestamp.getTime());
+  assert.equal(calls[0].json.project, 'my-project');
+  assert.equal(calls[0].json.icon, undefined);
+  assert.equal(calls[0].json.notify, undefined);
+  assert.deepEqual(calls[0].json.tags, options.tags);
+  await client.track({ channel: 'deployments', event: 'Epoch', timestamp: 0 });
+  assert.equal(calls[1].json.timestamp, 0);
+  await assert.rejects(client.track({ channel: 'x', event: 'x', timestamp: new Date('bad') }), /finite/);
+});
+test('pipeline create exposes ID and API-token POST step updates', async () => {
+  const response = { id: 'event-id', status: 'waiting', pipeline: { timeout: 900 } };
+  const { client, calls } = setup(response, 201);
+  assert.deepEqual(await client.pipeline.create({ channel: 'ci', event: 'Build', steps: [{ id: 'build', name: 'Build', stage: 'build' }], pipeline: { timeout: 900 } }), response);
+  const update = { id: 'build', status: 'success', message: 'Complete' };
+  await client.pipeline.update('event/id', update);
+  assert.equal(calls[1].url, 'https://example.test/v1/event/event%2Fid/step');
+  assert.equal(calls[1].method, 'POST');
+  assert.equal(calls[1].headers.Authorization, 'Bearer api-token');
+  assert.deepEqual(calls[1].json, update);
+  await assert.rejects(client.pipeline.create({ channel: 'ci', event: 'x', steps: [] }), /at least one/);
+});
+test('user pipeline paths and confirmations use JWT', async () => {
+  const { client, calls } = setup();
+  await client.pipeline.updateAsUser('event', { id: 'build', steps: [{ id: 'deploy', name: 'Deploy', stage: 'deploy', requires: ['build'] }] });
+  await client.pipeline.executeAction('event', 'step/id', 2, { inputs: { approved: true }, confirmed: true });
+  assert.equal(calls[0].method, 'PATCH');
+  assert.equal(calls[0].headers.Authorization, 'Bearer user-jwt');
+  assert.equal(calls[1].url, 'https://example.test/v1/event/event/steps/step%2Fid/actions/2/execute');
+  assert.deepEqual(calls[1].json, { inputs: { approved: true }, confirmed: true });
+  await assert.rejects(client.events.executeAction('event', -1), /non-negative/);
+});
+test('read/list filters, log/update/delete and profile avatar contracts', async () => {
+  const { client, calls } = setup();
+  await client.events.list({ status: ['running', 'failed'], notify: [false, true], page: 2 });
+  const url = new URL(calls[0].url);
+  assert.equal(url.searchParams.get('status'), 'running,failed');
+  assert.equal(url.searchParams.get('project'), 'my-project');
+  await client.events.get('event');
+  await client.events.update('event', { badge: null, notify: false });
+  await client.events.addLog('event', { type: 'manual', message: 'Reviewed' });
+  await client.events.executeAction('event', 0, { confirmed: true });
+  await client.events.delete('event');
+  await client.identify({ userId: 'user', properties: { addresses: ['one'] }, avatar: null });
+  await client.profiles.list({ userId: 'user' });
+  await client.profiles.get('user&a=b');
+  await client.profiles.delete('user');
+  assert.deepEqual(calls.slice(1).map(c => c.method), ['GET', 'PATCH', 'POST', 'POST', 'DELETE', 'POST', 'GET', 'GET', 'DELETE']);
+  assert.equal(calls[6].json.avatar, null);
+  assert.equal(new URL(calls[8].url).searchParams.get('userId'), 'user&a=b');
+  assert.ok(calls[9].url.includes('/identify/query?'));
+});
+test('insight increment forwards notification and numeric mutation; reads/deletes are user scoped', async () => {
+  const { client, calls } = setup();
+  await client.insight.track({ title: 'Builds', value: 1, notify: false });
+  await client.insight.increment({ title: 'Builds', value: 2, notify: true });
+  await client.insight.mutate({ title: 'Builds', value: { $inc: -1 } });
+  await client.insight.list({ title: 'Builds' });
+  await client.insight.get('Builds');
+  await client.insight.delete('Builds');
+  assert.deepEqual(calls[1].json, { title: 'Builds', value: { $inc: 2 }, notify: true, project: 'my-project' });
+  assert.equal(calls[4].headers.Authorization, 'Bearer user-jwt');
+  assert.equal(calls[5].method, 'DELETE');
+});
+test('user token is required explicitly and errors preserve HTTP status for non-JSON bodies', async () => {
+  const client = new Tracklytic({ token: 'api', project: 'project', request: async () => new Response('upstream unavailable', { status: 502, statusText: 'Bad Gateway' }) });
+  await assert.rejects(client.events.get('id'), /accessToken/);
+  await assert.rejects(client.track({ channel: 'ci', event: 'Build' }), error => error instanceof HTTPResponseError && error.status === 502);
+  const { client: noContent } = setup({}, 204);
+  assert.equal(await noContent.events.delete('id'), undefined);
+});
+test('disabled writes never send requests, including new pipeline/action flows; reads still read', async () => {
+  const { client, calls } = setup();
+  client.disableTracking();
+  assert.equal(await client.track({ channel: 'ci', event: 'Build' }), true);
+  assert.deepEqual(await client.createEvent({ channel: 'ci', event: 'Build' }), {});
+  assert.equal(await client.pipeline.create({ channel: 'ci', event: 'Build', steps: [] }), undefined);
+  await client.pipeline.update('id', { id: 'build', status: 'success' });
+  await client.pipeline.updateAsUser('id', { id: 'build', status: 'success' });
+  await client.pipeline.executeAction('id', 'step', 0);
+  await client.events.update('id', { badge: null });
+  await client.events.addLog('id', { type: 'info', message: 'x' });
+  await client.events.executeAction('id', 0);
+  await client.events.delete('id');
+  await client.profiles.delete('user');
+  await client.insight.delete('Builds');
+  await client.identify({ userId: 'u', properties: {} });
+  await client.insight.increment({ title: 'Builds', value: 1 });
+  assert.equal(calls.length, 0);
+  await client.events.list();
+  assert.equal(calls.length, 1);
+  client.enableTracking();
+  await client.track({ channel: 'ci', event: 'Build' });
+  assert.equal(calls.length, 2);
+});

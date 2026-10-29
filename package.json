@@ -1,6 +1,6 @@
 {
   "name": "tracklytic",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Tracklytic Client - Real-time event tracking and analytics",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,11 +13,13 @@
     "publish-beta": "npm run build && npm publish --tag beta",
     "publish-dryrun": "npm run build && npm publish --dry-run",
     "prettier-format": "prettier --config .prettierrc 'src/**/*.ts' --write",
-    "lint": "eslint --ext .ts src"
+    "lint": "eslint --ext .ts src",
+    "test": "npm run build && tsc -p tsconfig.types.json && node --test tests/*.test.cjs",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Tracklytic/tracklytic.js.git"
+    "url": "git+https://git.scalerit.de/tracklytic/tracklytic-sdk.git"
   },
   "keywords": [
     "tracklytic",
@@ -30,9 +32,9 @@
   "author": "Tracklytic Team",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Tracklytic/tracklytic.js/issues"
+    "url": "https://git.scalerit.de/tracklytic/tracklytic-sdk/-/issues"
   },
-  "homepage": "https://github.com/Tracklytic/tracklytic.js#readme",
+  "homepage": "https://docs.tracklytic.de/sdks/javascript/",
   "dependencies": {
     "isomorphic-fetch": "^3.0.0"
   },
@@ -45,5 +47,8 @@
     "prettier": "^2.5.1",
     "typescript": "^4.2.3",
     "vite": "^3.2.7"
-  }
+  },
+  "files": [
+    "dist"
+  ]
 }

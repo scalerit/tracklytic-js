@@ -1,21 +1,8 @@
-import { TagKey } from './track';
-
-/** Properties Type **/
-export type Properties = { [key: TagKey]: string | number | boolean };
-
-/**
- * Options for publishing Tracklytic identify
- */
+import { JSONObject } from './track';
+export type Properties = JSONObject;
 export interface IdentifyOptions {
-  /**
-   * User ID
-   * example: "user_123"
-   */
-  user_id: string;
-
-  /**
-   * User properties
-   * example: { name: "John Doe", email: "john@example.com", plan: "premium" }
-   */
+  userId: string;
   properties: Properties;
+  /** Public HTTPS URL, supported Base64 image, or null to remove. */
+  avatar?: string | null;
 }

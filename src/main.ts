@@ -1,4 +1,4 @@
 // @denoify-ignore
 import Tracklytic from './client/tracklytic';
 
-(<any>window).Tracklytic = Tracklytic;
+(window as Window & { Tracklytic?: typeof Tracklytic }).Tracklytic = Tracklytic;
