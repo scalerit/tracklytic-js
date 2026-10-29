@@ -2,8 +2,12 @@
 
 A typed client for the current Tracklytic v1 API. Supports events, interactive actions, pipelines, profiles and insights.
 
+Source: [scalerit/tracklytic-js](https://github.com/scalerit/tracklytic-js). GitLab is the development source; this GitHub repository is its public mirror.
+
+Version 2.0.0 is available as a built package in the GitHub release. The npm registry publication is pending; the release URL below works with npm without GitLab access.
+
 ```sh
-npm install tracklytic@^2.0.0
+npm install https://github.com/scalerit/tracklytic-js/releases/download/v2.0.0/tracklytic-2.0.0.tgz
 ```
 
 ```ts
