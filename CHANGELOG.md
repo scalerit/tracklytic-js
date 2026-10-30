@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.0.1 — 2026-10-30
+
+- Publish under the ScalerIT npm organization as `@scalerit/tracklytic`; update installation and import examples.
+- Preserve the 2.0.0 API and compiled package structure.
+
 ## 2.0.0 — 2026-10-30
 
 - Support event badges, severity, nested JSON tags and Unix-millisecond timestamps; remove legacy event icons.

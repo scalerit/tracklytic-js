@@ -1,6 +1,6 @@
 {
-  "name": "tracklytic",
-  "version": "2.0.0",
+  "name": "@scalerit/tracklytic",
+  "version": "2.0.1",
   "description": "Tracklytic Client - Real-time event tracking and analytics",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -50,5 +50,8 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
 }
